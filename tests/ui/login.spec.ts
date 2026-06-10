@@ -1,9 +1,11 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { LoginPage } from '../../pages/LoginPage';
+import { InventoryPage } from '../../pages/InventoryPage';
 import { users } from '../../data/users';
 
 test('successful login redirects user to inventory page', async ({ page }) => {
   const loginPage = new LoginPage(page);
+  const inventoryPage = new InventoryPage(page);
 
   await loginPage.goto();
 
@@ -12,8 +14,7 @@ test('successful login redirects user to inventory page', async ({ page }) => {
     users.validUser.password
   );
 
-  await expect(page).toHaveURL(/inventory/);
-  await expect(page.locator('.inventory_list')).toBeVisible();
+  await inventoryPage.expectInventoryPageLoaded();
 });
 
 test('invalid login shows validation error', async ({ page }) => {
