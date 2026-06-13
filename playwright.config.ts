@@ -7,7 +7,7 @@ export default defineConfig({
   fullyParallel: true,
   reporter: [['html'], ['list']],
   use: {
-    baseURL: process.env.BASE_URL || 'https://www.saucedemo.com',
+    baseURL: process.env.BASE_URL,
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
     video: 'retain-on-failure',

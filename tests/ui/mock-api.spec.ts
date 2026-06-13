@@ -24,7 +24,7 @@ test('@api mock inventory api response', async ({ page }) => {
     await route.abort();
   });
 
-  await page.goto('https://www.saucedemo.com/inventory.html');
+  await page.goto('/inventory.html');
 
   await expect(page.locator('.inventory_list'))
     .toBeVisible();

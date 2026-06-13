@@ -4,7 +4,7 @@ import AxeBuilder from '@axe-core/playwright';
 test('@accessibility login page accessibility scan', async ({
   page,
 }) => {
-  await page.goto('https://www.saucedemo.com');
+  await page.goto('/');
 
   const accessibilityScanResults = await new AxeBuilder({
     page,
