@@ -8,6 +8,12 @@
   },
   "scripts": {
     "test": "playwright test",
+    "test:ci": "playwright test --grep-invert @visual",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:api": "playwright test --grep @api",
+    "test:network": "playwright test --grep @network",
+    "test:accessibility": "playwright test --grep @accessibility",
+    "test:visual": "playwright test --grep @visual",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "report": "playwright show-report"

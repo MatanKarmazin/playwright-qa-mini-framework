@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('@api mock inventory api response', async ({ page }) => {
+test('@network mock inventory api response', async ({ page }) => {
   await page.route('**/api/products', async route => {
 
     await route.fulfill({
