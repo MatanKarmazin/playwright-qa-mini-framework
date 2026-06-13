@@ -1,17 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { UsersApiClient } from '../../api/clients/UsersApiClient';
 
-test('GET users returns valid response', async ({ request }) => {
-  const response = await request.get(
-    'https://jsonplaceholder.typicode.com/users'
-  );
+test('@api GET users returns valid response', async ({ request }) => {
+  const usersApiClient = new UsersApiClient(request);
 
-  expect(response.status()).toBe(200);
+  const users = await usersApiClient.getUsers();
 
-  const body = await response.json();
+  expect(Array.isArray(users)).toBeTruthy();
+  expect(users.length).toBeGreaterThan(0);
 
-  expect(Array.isArray(body)).toBeTruthy();
-  expect(body.length).toBeGreaterThan(0);
-
-  expect(body[0]).toHaveProperty('email');
-  expect(body[0]).toHaveProperty('name');
+  expect(users[0]).toHaveProperty('email');
+  expect(users[0]).toHaveProperty('name');
 });
