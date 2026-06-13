@@ -1,26 +1,15 @@
-import { test } from '@playwright/test';
+import { test } from '../../fixtures/test-fixtures';
 
-import { LoginPage } from '../../pages/LoginPage';
-import { InventoryPage } from '../../pages/InventoryPage';
-import { CheckoutPage } from '../../pages/CheckoutPage';
-import { CartPage } from '../../pages/CartPage';
-
-import { users } from '../../data/users';
 import { checkoutData } from '../../data/checkoutData';
 import { products } from '../../data/products';
 
-test('checkout form requires first name', async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const inventoryPage = new InventoryPage(page);
-  const checkoutPage = new CheckoutPage(page);
-  const cartPage = new CartPage(page);
-
-  await loginPage.goto();
-
-  await loginPage.login(
-    users.validUser.username,
-    users.validUser.password
-  );
+test('checkout form requires first name', async ({
+  page,
+  inventoryPage,
+  checkoutPage,
+  cartPage,
+}) => {
+  await page.goto('/inventory.html');
 
   await inventoryPage.addProductToCart(
     products.backpack.addToCartButton
@@ -41,18 +30,13 @@ test('checkout form requires first name', async ({ page }) => {
   );
 });
 
-test('successful checkout flow', async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const inventoryPage = new InventoryPage(page);
-  const checkoutPage = new CheckoutPage(page);
-  const cartPage = new CartPage(page);
-
-  await loginPage.goto();
-
-  await loginPage.login(
-    users.validUser.username,
-    users.validUser.password
-  );
+test('successful checkout flow', async ({
+  page,
+  inventoryPage,
+  checkoutPage,
+  cartPage,
+}) => {
+  await page.goto('/inventory.html');
 
   await inventoryPage.addProductToCart(
     products.backpack.addToCartButton
