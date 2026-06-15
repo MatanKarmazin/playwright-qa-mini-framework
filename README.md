@@ -1,116 +1,98 @@
 # Playwright QA Mini Framework
 
-A lightweight end-to-end automation framework built with Playwright and TypeScript.
+A maintainable end-to-end automation framework built with Playwright and
+TypeScript. The project demonstrates reusable test architecture, clear
+separation of responsibilities, and CI-ready quality controls.
 
-This project demonstrates modern QA Automation practices including:
+## Highlights
 
-* Page Object Model (POM)
-* UI testing
-* API testing
-* Test data separation
-* HTML reporting
-* Screenshots and video recording on failures
-* Reusable test architecture
+- Page Object Model with selectors and UI actions encapsulated by page objects
+- Typed fixtures that provide reusable page objects to tests
+- Authentication state reuse across UI tests
+- Dedicated UI, API, network mocking, accessibility, and visual tests
+- Runtime API schema validation with Zod
+- Centralized test data and environment-based configuration
+- Chromium, Firefox, and WebKit coverage
+- HTML reports, failure screenshots, retained videos, and retry traces
+- CI pipeline with type checking, linting, formatting checks, tests, and
+  report artifacts
 
+## Project Structure
 
+```text
+api/
+  clients/       Reusable API clients
+  schemas/       Runtime response schemas
+data/            Centralized test data
+fixtures/        Typed Playwright fixtures
+pages/           Page Objects
+tests/
+  api/           API tests
+  ui/            UI, accessibility, network, and visual tests
+```
 
-## Tech Stack
-
-* TypeScript
-* Playwright
-* Node.js
-* HTML Reports
-
-
-
-## Features
-
-### UI Testing
-
-* Login validation
-* Invalid login scenarios
-* Add product to cart
-* Checkout validation
-* Successful checkout flow
-
-### API Testing
-
-* REST API validation
-* Response assertions
-* JSON response verification
-
-### Framework Features
-
-* Page Object Model architecture
-* Centralized test data
-* Environment configuration support
-* Screenshots on failure
-* Video recording on failure
-* Trace collection on retry
-* HTML reporting
-
-
-
-## Installation
+## Setup
 
 ```bash
 npm install
-```
-
-Install Playwright browsers:
-
-```bash
 npx playwright install
+cp .env.example .env
 ```
-
-
 
 ## Running Tests
 
-Run all tests:
-
 ```bash
 npm test
-```
-
-Run tests in headed mode:
-
-```bash
+npm run test:ci
+npm run test:smoke
+npm run test:api
+npm run test:network
+npm run test:accessibility
+npm run test:visual
 npm run test:headed
-```
-
-Run Playwright UI mode:
-
-```bash
 npm run test:ui
 ```
 
-Open HTML report:
+`test:ci` runs the full automated suite except visual snapshots, which are
+environment-specific.
+
+Targeted scripts run on Chromium or the dedicated API project for fast local
+feedback. The full CI suite still validates UI behavior across Chromium,
+Firefox, and WebKit.
+
+## Quality Checks
+
+```bash
+npm run quality
+npm run typecheck
+npm run lint
+npm run format:check
+```
+
+## Reports and Debugging
 
 ```bash
 npm run report
 ```
 
+Playwright generates an HTML report and captures screenshots and videos on
+failure. On the first CI retry, it also records a trace. CI uploads the HTML
+report as an artifact even when tests fail.
 
+## Accessibility Baseline
 
-## Reports
+The demo application contains documented accessibility violations. The
+accessibility test treats them as an explicit baseline and fails when a new,
+unexpected violation appears. The full scan is attached to the Playwright
+report for review.
 
-The framework automatically generates:
+## CI Configuration
 
-* HTML reports
-* Screenshots on failures
-* Video recordings on failures
-* Trace files on retries
+The GitHub Actions workflow expects these repository variables:
 
+```text
+BASE_URL=https://www.saucedemo.com
+API_BASE_URL=https://jsonplaceholder.typicode.com
+```
 
-
-## Future Improvements
-
-* GitHub Actions CI integration
-* Parallel execution optimization
-* Multi-browser testing
-* Fixtures
-* API schema validation
-* Allure reporting
-* Environment-based configurations
-* Test tagging and filtering
+Each push and pull request runs quality checks followed by the CI test suite.

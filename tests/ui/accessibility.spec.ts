@@ -1,25 +1,29 @@
-import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from '@playwright/test';
 
-test('@accessibility login page accessibility scan', async ({
+const knownViolationIds = new Set([
+  'color-contrast',
+  'landmark-one-main',
+  'region',
+  'page-has-heading-one',
+]);
+
+test.use({ storageState: { cookies: [], origins: [] } });
+
+test('@accessibility login page has no unexpected accessibility violations', async ({
   page,
-}) => {
+}, testInfo) => {
   await page.goto('/');
 
-  const accessibilityScanResults = await new AxeBuilder({
-    page,
-  }).analyze();
-
-  console.log(
-    `Accessibility violations found: ${accessibilityScanResults.violations.length}`
+  const results = await new AxeBuilder({ page }).analyze();
+  const unexpectedViolations = results.violations.filter(
+    ({ id }) => !knownViolationIds.has(id),
   );
 
-  expect(accessibilityScanResults.violations.length)
-    .toBeLessThanOrEqual(5);
+  await testInfo.attach('accessibility-results', {
+    body: JSON.stringify(results.violations, null, 2),
+    contentType: 'application/json',
+  });
 
-  const violationIds = accessibilityScanResults.violations.map(
-    violation => violation.id
-  );
-
-  expect(violationIds).toContain('region');
+  expect(unexpectedViolations).toEqual([]);
 });

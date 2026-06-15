@@ -1,31 +1,30 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-test('@network mock inventory api response', async ({ page }) => {
-  await page.route('**/api/products', async route => {
+test('@network replaces an inventory response with a controlled fixture', async ({
+  page,
+}) => {
+  const mockedProductName = 'Mocked QA Product';
 
+  await page.route('**/inventory.html', async (route) => {
     await route.fulfill({
       status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify([
-        {
-          id: 1,
-          name: 'Mocked Product',
-          price: 999,
-        },
-      ]),
+      contentType: 'text/html',
+      body: `
+        <!doctype html>
+        <html lang="en">
+          <head><title>Mocked inventory</title></head>
+          <body>
+            <main class="inventory_list">
+              <article class="inventory_item">${mockedProductName}</article>
+            </main>
+          </body>
+        </html>
+      `,
     });
-  });
-
-  await page.route('**/inventory.html', async route => {
-    await route.continue();
-  });
-
-  await page.route('**/*.png', async route => {
-    await route.abort();
   });
 
   await page.goto('/inventory.html');
 
-  await expect(page.locator('.inventory_list'))
-    .toBeVisible();
+  await expect(page.locator('.inventory_list')).toBeVisible();
+  await expect(page.getByText(mockedProductName)).toBeVisible();
 });

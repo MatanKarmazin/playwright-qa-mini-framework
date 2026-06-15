@@ -1,67 +1,30 @@
-import { test } from '../../fixtures/test-fixtures';
-
 import { checkoutData } from '../../data/checkoutData';
 import { products } from '../../data/products';
+import { test } from '../../fixtures/test-fixtures';
 
 test.describe('@smoke @checkout checkout tests', () => {
-
-  test('checkout form requires first name', async ({
-    page,
-    inventoryPage,
-    checkoutPage,
-    cartPage,
-  }) => {
-    await page.goto('/inventory.html');
-
-    await inventoryPage.addProductToCart(
-      products.backpack.addToCartButton
-    );
-
+  test.beforeEach(async ({ inventoryPage }) => {
+    await inventoryPage.open();
+    await inventoryPage.addProductToCart(products.backpack.name);
     await inventoryPage.openCart();
-
-    await cartPage.expectProductInCart(
-      products.backpack.name
-    );
-
-    await cartPage.clickCheckout();
-
-    await checkoutPage.continueCheckout();
-
-    await checkoutPage.expectErrorMessage(
-      'First Name is required'
-    );
   });
 
-  test('successful checkout flow', async ({
-    page,
-    inventoryPage,
-    checkoutPage,
+  test('checkout form requires first name', async ({
     cartPage,
+    checkoutPage,
   }) => {
-    await page.goto('/inventory.html');
-
-    await inventoryPage.addProductToCart(
-      products.backpack.addToCartButton
-    );
-
-    await inventoryPage.openCart();
-
-    await cartPage.expectProductInCart(
-      products.backpack.name
-    );
-
+    await cartPage.expectProductInCart(products.backpack.name);
     await cartPage.clickCheckout();
-
-    await checkoutPage.fillCheckoutInformation(
-      checkoutData.validCustomer.firstName,
-      checkoutData.validCustomer.lastName,
-      checkoutData.validCustomer.postalCode
-    );
-
     await checkoutPage.continueCheckout();
+    await checkoutPage.expectErrorMessage('First Name is required');
+  });
 
+  test('successful checkout flow', async ({ cartPage, checkoutPage }) => {
+    await cartPage.expectProductInCart(products.backpack.name);
+    await cartPage.clickCheckout();
+    await checkoutPage.fillCheckoutInformation(checkoutData.validCustomer);
+    await checkoutPage.continueCheckout();
     await checkoutPage.finishCheckout();
-
     await checkoutPage.expectCheckoutComplete();
   });
 });

@@ -2,17 +2,17 @@ import { expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class LoginPage extends BasePage {
-  async goto() {
-    await this.page.goto('/');
+  async open() {
+    await this.goto('/');
   }
 
   async login(username: string, password: string) {
-    await this.page.locator('[data-test="username"]').fill(username);
-    await this.page.locator('[data-test="password"]').fill(password);
-    await this.page.locator('[data-test="login-button"]').click();
+    await this.page.getByTestId('username').fill(username);
+    await this.page.getByTestId('password').fill(password);
+    await this.page.getByTestId('login-button').click();
   }
 
   async expectErrorMessage(message: string) {
-    await expect(this.page.locator('[data-test="error"]')).toContainText(message);
+    await expect(this.page.getByTestId('error')).toContainText(message);
   }
 }
